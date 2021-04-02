@@ -1,0 +1,1 @@
+/usr/bin/c++ -pthread CMakeFiles/persival.dir/src/main.cpp.o CMakeFiles/persival.dir/src/sample/sample_set.cpp.o CMakeFiles/persival.dir/src/color/color_map.cpp.o CMakeFiles/persival.dir/src/sample/tyle.cpp.o -o persival  /usr/lib/x86_64-linux-gnu/libsfml-graphics.so.2.5.1 /usr/lib/x86_64-linux-gnu/libsfml-window.so.2.5.1 /usr/lib/x86_64-linux-gnu/libsfml-system.so.2.5.1 
