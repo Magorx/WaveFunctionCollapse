@@ -49,6 +49,7 @@ bool WaveFunctionCollapser::collapse() {
 	std::set<wfc_WeightedPair> q;
 
 	q.insert({index_map[init_coord].size(), init_coord});
+	bool flag = false;
 	while (q.size()) {
 		wfc_WeightedPair p = *q.begin();
 		q.erase(p);
@@ -64,7 +65,9 @@ bool WaveFunctionCollapser::collapse() {
 		size_t shifts[4] = {(size_t) -width, (size_t) -1, +width, +1};
 		for (int rel_pos = 0; rel_pos < 4; ++rel_pos) {
 			size_t new_coord = coord + shifts[rel_pos];
-			if (!check_coord(new_coord)) {
+			if (!check_coord(new_coord) || final_index_map[new_coord] != (size_t) -1
+				|| (rel_pos == 1 && coord % width == 0)
+				|| (rel_pos == 3 && coord % width == width - 1)){
 				continue;
 			}
 
@@ -86,10 +89,8 @@ bool WaveFunctionCollapser::collapse() {
 			if (new_s.empty()) {
 				return false;
 			}
-
-			if (final_index_map[new_coord] == (size_t) -1) {
-				q.insert({new_s.size(), new_coord});
-			}
+			
+			q.insert({new_s.size(), new_coord});
 		}
 	}
 

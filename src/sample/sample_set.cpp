@@ -16,7 +16,7 @@ bool wfc_SampleSet::rebuild_fitmask() {
 	for (size_t i = 0; i < cnt; ++i) {
 		for (size_t j = 0; j < cnt; ++j) {
 			for (size_t rel_pos = 0; rel_pos < rel_pos_amount; ++rel_pos) {
-				fitmask[i * cnt * cnt + j * cnt + rel_pos] = samples[i]->fits(samples[j], rel_pos);
+				fitmask[i * cnt  * rel_pos_amount + j * rel_pos_amount + rel_pos] = samples[i]->fits(samples[j], rel_pos);
 			}
 		}
 	}
@@ -41,7 +41,7 @@ void wfc_SampleSet::add_sample_set(const wfc_SampleSet &sset) {
 
 char wfc_SampleSet::fits(const size_t first, const size_t second, const int rel_pos) const {
 	size_t cnt = samples.size();
-	return fitmask[first * cnt * cnt + second * cnt + rel_pos];
+	return fitmask[first * cnt * rel_pos_amount + second * rel_pos_amount + rel_pos];
 }
 
 size_t wfc_SampleSet::size() const {

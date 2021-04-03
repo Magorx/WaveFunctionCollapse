@@ -10,16 +10,17 @@ std::vector<const char*> filenames = {
 	"pipe_straight.png",
 	"pipe_cross.png",
 	"pipe_angle.png",
-	"pipe_empty.png"
+	"pipe_empty.png",
+	"pipe_pump.png"
 };
 
 const size_t SAMPLE_W = 7;
 const size_t SAMPLE_H = 7;
 
-const size_t WFC_W = 20;
-const size_t WFC_H = 20;
+const size_t WFC_W = 30;
+const size_t WFC_H = 30;
 
-const size_t SCALE = 7;
+const size_t SCALE = 5;
 
 const size_t SCR_W = WFC_W * SAMPLE_W * SCALE;
 const size_t SCR_H = WFC_H * SAMPLE_H * SCALE;
@@ -35,10 +36,26 @@ int main() {
 	}
 
 	wfc_SampleSet sset(RELPOS_CNT);
+	// wfc_Tyle t("flower.png");
+	// sset.add_sample_set(t.cut_and_samplize(SAMPLE_W));
+
 	for (int i = 0; i < filenames.size(); ++i) {
 		sset.add_sample_set(tyles[i]->samplize());
 	}
+
+	sset.rebuild_fitmask();
+
 	printf("samples: %lu\n", sset.size());
+
+	for (int i = 0; i < RELPOS_CNT; ++i) {
+		printf("dir [%d]\n", i);
+		for (int j = 0; j < sset.size(); ++j) {
+			for (int k = 0; k < sset.size(); ++k) {
+				printf("[%d] + [%d] = %c\n", j, k, sset.fits(j, k, i) ? 'Y' : 'N');
+			}
+			printf("\n");
+		}
+	}
 
 	WaveFunctionCollapser wfc(WFC_W, WFC_H, sset);
 
@@ -54,7 +71,16 @@ int main() {
 	while (window.isOpen()) {
 		// TIMER_START();
 		while (!wfc.collapse());
+		// for (int i = 0; i < wfc.height; ++i) {
+		// 	for (int j = 0; j < wfc.width; ++j) {
+		// 		printf("%lu ", wfc.final_index_map[i * wfc.width + j]);
+		// 	}
+		// 	printf("\n");
+		// }
 		// TIMER_END_AND_PRINT();
+		// for (size_t i = 0; i < sset.size(); ++i) {
+		// 	wfc.final_index_map[i] = i;
+		// }
 		wfc.generate_image(SAMPLE_W, SAMPLE_H);
 
 		sf::Event event;

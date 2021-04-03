@@ -30,6 +30,8 @@ public:
 	wfc_Tyle *rot90 () const;
 	wfc_Tyle *refl_hor () const;
 	wfc_Tyle *refl_vert() const;
+
+	wfc_SampleSet cut_and_samplize(const size_t n) const;
 };
 
 #endif // TYLE

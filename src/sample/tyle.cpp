@@ -143,3 +143,22 @@ wfc_Tyle *wfc_Tyle::refl_vert() const {
 	return ret;
 }
 
+wfc_SampleSet wfc_Tyle::cut_and_samplize(const size_t n) const {
+	wfc_SampleSet sset;
+
+	for (size_t i = 0; i < height - n; ++i) {
+		for (size_t j = 0; j  < width - n; ++j) {
+			wfc_Tyle *tyle = new wfc_Tyle(n, n);
+			for (size_t y = 0; y < n; ++y) {
+				for (size_t x = 0; x < n; ++x) {
+					(*tyle)[y][x] = (*this)[i + y][j + x];
+				}
+			}
+
+			sset.add_sample(tyle);
+			// sset.add_sample_set(tyle->samplize());
+		}
+	}
+
+	return sset;
+}
