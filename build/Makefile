@@ -225,6 +225,30 @@ src/sample/tyle.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/persival.dir/build.make CMakeFiles/persival.dir/src/sample/tyle.cpp.s
 .PHONY : src/sample/tyle.cpp.s
 
+src/wfc.o: src/wfc.cpp.o
+.PHONY : src/wfc.o
+
+# target to build an object file
+src/wfc.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/persival.dir/build.make CMakeFiles/persival.dir/src/wfc.cpp.o
+.PHONY : src/wfc.cpp.o
+
+src/wfc.i: src/wfc.cpp.i
+.PHONY : src/wfc.i
+
+# target to preprocess a source file
+src/wfc.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/persival.dir/build.make CMakeFiles/persival.dir/src/wfc.cpp.i
+.PHONY : src/wfc.cpp.i
+
+src/wfc.s: src/wfc.cpp.s
+.PHONY : src/wfc.s
+
+# target to generate assembly for a file
+src/wfc.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/persival.dir/build.make CMakeFiles/persival.dir/src/wfc.cpp.s
+.PHONY : src/wfc.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -246,6 +270,9 @@ help:
 	@echo "... src/sample/tyle.o"
 	@echo "... src/sample/tyle.i"
 	@echo "... src/sample/tyle.s"
+	@echo "... src/wfc.o"
+	@echo "... src/wfc.i"
+	@echo "... src/wfc.s"
 .PHONY : help
 
 

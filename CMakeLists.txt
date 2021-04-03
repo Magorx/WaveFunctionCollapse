@@ -22,6 +22,9 @@ add_executable(persival
         src/color/color_map.h
         src/color/color_map.cpp
         src/sample/tyle.h
-        src/sample/tyle.cpp)
+        src/sample/tyle.cpp
+        src/sample/collection_samples.h
+        src/wfc.h
+        src/wfc.cpp)
 
 target_link_libraries(persival sfml-graphics sfml-window sfml-system)

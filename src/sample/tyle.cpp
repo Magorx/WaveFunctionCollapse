@@ -78,6 +78,68 @@ bool wfc_Tyle::fits(const wfc_Sample *sample, const int rel_pos) const {
 	return true;
 }
 
-wfc_SampleSet wfc_Tyle::samplize() const {
-	return {};
+bool wfc_Tyle::eq_sample(const wfc_Sample *sample) const {
+	const wfc_Tyle *tyle = dynamic_cast<const wfc_Tyle*>(sample);
+
+	if (tyle->width != width || tyle->height != height) {
+		return false;
+	}
+
+	size_t square = width * height;
+	for (size_t i = 0; i < square; ++i) {
+		if (data[i].i != tyle->data[i].i) {
+			return false;
+		}
+	}
+
+	return true;
 }
+
+wfc_SampleSet wfc_Tyle::samplize() const {
+	wfc_SampleSet ret;
+	wfc_Tyle *r90  = this->rot90();
+	wfc_Tyle *r180 = r90 ->rot90();
+	wfc_Tyle *r270 = r180->rot90();
+
+	ret.add_sample(this);
+	ret.add_sample(r90);
+	ret.add_sample(r180);
+	ret.add_sample(r270);
+	ret.add_sample(refl_hor());
+	ret.add_sample(refl_vert());
+	return ret;
+}
+
+wfc_Tyle *wfc_Tyle::rot90 () const {
+	wfc_Tyle *ret = new wfc_Tyle(height, width);
+	for (int i = 0; i < height; ++i) {
+		for (int j = 0; j < width; ++j) {
+			(*ret)[width - 1 - j][i] = (*this)[i][j];
+		}
+	}
+
+	return ret;
+}
+
+wfc_Tyle *wfc_Tyle::refl_hor () const {
+	wfc_Tyle *ret = new wfc_Tyle(width, height);
+	for (int i = 0; i < height; ++i) {
+		for (int j = 0; j < width; ++j) {
+			(*ret)[height - 1 - i][j] = (*this)[i][j];
+		}
+	}
+
+	return ret;
+}
+
+wfc_Tyle *wfc_Tyle::refl_vert() const {
+	wfc_Tyle *ret = new wfc_Tyle(width, height);
+	for (int i = 0; i < height; ++i) {
+		for (int j = 0; j < width; ++j) {
+			(*ret)[i][width - 1 - j] = (*this)[i][j];
+		}
+	}
+
+	return ret;
+}
+

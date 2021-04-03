@@ -12,6 +12,7 @@ set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "/home/kctf/Repositories/WaveFunctionCollapse/src/main.cpp" "CMakeFiles/persival.dir/src/main.cpp.o" "gcc" "CMakeFiles/persival.dir/src/main.cpp.o.d"
   "/home/kctf/Repositories/WaveFunctionCollapse/src/sample/sample_set.cpp" "CMakeFiles/persival.dir/src/sample/sample_set.cpp.o" "gcc" "CMakeFiles/persival.dir/src/sample/sample_set.cpp.o.d"
   "/home/kctf/Repositories/WaveFunctionCollapse/src/sample/tyle.cpp" "CMakeFiles/persival.dir/src/sample/tyle.cpp.o" "gcc" "CMakeFiles/persival.dir/src/sample/tyle.cpp.o.d"
+  "/home/kctf/Repositories/WaveFunctionCollapse/src/wfc.cpp" "CMakeFiles/persival.dir/src/wfc.cpp.o" "gcc" "CMakeFiles/persival.dir/src/wfc.cpp.o.d"
   )
 
 # Targets to which this target links.

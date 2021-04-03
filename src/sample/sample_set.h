@@ -14,9 +14,16 @@ public:
 
 	wfc_SampleSet(const size_t rel_pos_amount_ = 0);
 
-	void add_sample(const wfc_Sample *sample);
+	inline void add_sample(const wfc_Sample *sample) {
+		samples.push_back(sample);
+	}
+
+	void add_sample_set(const wfc_SampleSet &sset);
 	bool rebuild_fitmask();
 	char fits(const size_t first, const size_t second, const int rel_pos) const;
+
+	size_t size() const;
+	
 };
 
 #endif // SAMPLE_SET

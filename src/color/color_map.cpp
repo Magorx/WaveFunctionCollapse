@@ -85,26 +85,19 @@ void ColorMap::crop_rectangle(size_t &x0, size_t &y0, size_t &x1, size_t &y1) co
 	}
 }
 
-// void ColorMap::superimpose_alpha(const ColorMap &cmap, size_t x0, size_t y0) {
-// 	if (!is_valid() || !cmap.is_valid()) {
-// 		printf("[ERR]<superimpose>: bad imagies provided\n");
-// 		return;
-// 	}
-	
-// 	x0 = force_align_4(x0);
-// 	size_t x1 = x0 + cmap.width;
-// 	size_t y1 = y0 + cmap.height;
-// 	crop_rectangle(x0, y0, x1, y1);
+void ColorMap::superimpose(const ColorMap &cmap, size_t x0, size_t y0) {
+	size_t x1 = x0 + cmap.width;
+	size_t y1 = y0 + cmap.height;
+	crop_rectangle(x0, y0, x1, y1);
 
-// 	for (size_t y = y0, yy = 0; y < y1; ++y, ++yy) {
-// 		for (size_t x = x0, xx = 0; x < x1; ++x, ++xx) {
-// 			ARGB c1 = data[y * width + x];
-// 			ARGB c2 = cmap[yy][xx];
-// 			data[y * width + x] = mult((255 - c2.a) / 255.0f, c1) + mult(c2.a / 255.0f, c2);
-// 		}
-// 	}
-
-// }
+	for (size_t y = y0, yy = 0; y < y1; ++y, ++yy) {
+		for (size_t x = x0, xx = 0; x < x1; ++x, ++xx) {
+			ARGB c1 = data[y * width + x];
+			ARGB c2 = cmap[yy][xx];
+			data[y * width + x] = c2;
+		}
+	}
+}
 
 // void ColorMap::superimpose_alpha_intr(const ColorMap &cmap, size_t x0, size_t y0) {
 // 	if (!is_valid() || !cmap.is_valid()) {

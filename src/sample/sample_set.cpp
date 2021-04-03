@@ -1,7 +1,8 @@
 #include "sample_set.h"
 
 wfc_SampleSet::wfc_SampleSet(const size_t rel_pos_amount_):
-rel_pos_amount(rel_pos_amount_)
+rel_pos_amount(rel_pos_amount_),
+fitmask(nullptr)
 {}
 
 bool wfc_SampleSet::rebuild_fitmask() {
@@ -23,11 +24,26 @@ bool wfc_SampleSet::rebuild_fitmask() {
 	return true;
 }
 
-void wfc_SampleSet::add_sample(const wfc_Sample *sample) {
-	samples.push_back(sample);
+void wfc_SampleSet::add_sample_set(const wfc_SampleSet &sset) {
+	for (auto sample : sset.samples) {
+		bool to_add = true;
+		for (auto s : samples) {
+			if (s->eq_sample(sample)) {
+				to_add = false;
+				break;
+			}
+		}
+		if (to_add) {
+			add_sample(sample);
+		}
+	}
 }
 
 char wfc_SampleSet::fits(const size_t first, const size_t second, const int rel_pos) const {
 	size_t cnt = samples.size();
 	return fitmask[first * cnt * cnt + second * cnt + rel_pos];
+}
+
+size_t wfc_SampleSet::size() const {
+	return samples.size();
 }

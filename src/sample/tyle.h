@@ -12,6 +12,11 @@ enum RELATIVE_POSITION {
 	rp_RIGHT
 };
 
+enum TYLE_SAMPLIZERS {
+	tsp_ROTATE  = 1,
+	tsp_REFLECT = 2,
+};
+
 class wfc_Tyle : public wfc_Sample, public ColorMap {
 public:
 	wfc_Tyle();
@@ -20,6 +25,11 @@ public:
 
 	bool fits(const wfc_Sample *sample, const int rel_pos) const override;
 	wfc_SampleSet samplize() const override;
+	bool eq_sample(const wfc_Sample *sample) const override;
+
+	wfc_Tyle *rot90 () const;
+	wfc_Tyle *refl_hor () const;
+	wfc_Tyle *refl_vert() const;
 };
 
 #endif // TYLE
