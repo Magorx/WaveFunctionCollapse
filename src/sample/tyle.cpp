@@ -155,8 +155,8 @@ wfc_SampleSet wfc_Tyle::cut_and_samplize(const size_t n) const {
 				}
 			}
 
-			sset.add_sample(tyle);
-			// sset.add_sample_set(tyle->samplize());
+			//sset.add_sample(tyle);
+			sset.add_sample_set(tyle->samplize());
 		}
 	}
 

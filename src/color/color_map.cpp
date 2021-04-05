@@ -99,6 +99,23 @@ void ColorMap::superimpose(const ColorMap &cmap, size_t x0, size_t y0) {
 	}
 }
 
+void ColorMap::superimpose_divided(const ColorMap &cmap, size_t x0, size_t y0, float divisor) {
+	size_t x1 = x0 + cmap.width;
+	size_t y1 = y0 + cmap.height;
+	crop_rectangle(x0, y0, x1, y1);
+
+	for (size_t y = y0, yy = 0; y < y1; ++y, ++yy) {
+		for (size_t x = x0, xx = 0; x < x1; ++x, ++xx) {
+			ARGB c1 = data[y * width + x];
+			ARGB c2 = cmap[yy][xx];
+			data[y * width + x] = {c1.r + (unsigned char)(c2.r / divisor),
+								   c1.g + (unsigned char)(c2.g / divisor),
+								   c1.b + (unsigned char)(c2.b / divisor),
+								   c1.a + (unsigned char)(c2.a / divisor)};
+		}
+	}
+}
+
 // void ColorMap::superimpose_alpha_intr(const ColorMap &cmap, size_t x0, size_t y0) {
 // 	if (!is_valid() || !cmap.is_valid()) {
 // 		printf("[ERR]<superimpose>: bad imagies provided\n");

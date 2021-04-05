@@ -8,6 +8,14 @@
 #include <set>
 #include <queue>
 
+#include <SFML/Graphics.hpp>
+struct TSW {
+	sf::Texture *texture;
+	sf::Sprite *sprite;
+	sf::RenderWindow *window;
+	size_t sample_size;
+};
+
 class WaveFunctionCollapser {
 public:
 	size_t width;
@@ -18,9 +26,10 @@ public:
 	ColorMap cmap;
 
 	WaveFunctionCollapser(size_t width_, size_t height_, wfc_SampleSet sample_set_);
-	bool collapse();
+	bool collapse(TSW *tws = nullptr);
 
 	void generate_image(const size_t sample_w, const size_t sample_h);
+	void generate_mean_image(const size_t sample_w, const size_t sample_h);
 
 	inline bool check_coord(const size_t x, const size_t y) const {
 		return x < width && y < height;

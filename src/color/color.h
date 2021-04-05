@@ -21,6 +21,13 @@ union ARGB{
 	b(b_)
 	{}
 
+	ARGB(const int r_, const int g_, const int b_, const int a_ = 255):
+	a((unsigned char) a_),
+	r((unsigned char) r_),
+	g((unsigned char) g_),
+	b((unsigned char) b_)
+	{}
+
 	operator int() const;
 };
 

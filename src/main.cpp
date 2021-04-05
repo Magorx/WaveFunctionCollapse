@@ -6,19 +6,28 @@
 #include "wfc.h"
 #include "utils/timer.h"
 
+// std::vector<const char*> filenames = {
+// 	"pipe_straight.png",
+// 	"pipe_cross.png",
+// 	"pipe_angle.png",
+// 	"pipe_empty.png"
+// 	"pipe_pump.png"
+// };
+
 std::vector<const char*> filenames = {
 	"pipe_straight.png",
 	"pipe_cross.png",
 	"pipe_angle.png",
-	"pipe_empty.png",
-	"pipe_pump.png"
+	"pipe_empty.png"
 };
 
-const size_t SAMPLE_W = 7;
-const size_t SAMPLE_H = 7;
+const size_t SAMPLE_SIZE = 7;
 
-const size_t WFC_W = 30;
-const size_t WFC_H = 30;
+const size_t SAMPLE_W = SAMPLE_SIZE;
+const size_t SAMPLE_H = SAMPLE_SIZE;
+
+const size_t WFC_W = 25;
+const size_t WFC_H = 25;
 
 const size_t SCALE = 5;
 
@@ -36,8 +45,8 @@ int main() {
 	}
 
 	wfc_SampleSet sset(RELPOS_CNT);
-	// wfc_Tyle t("flower.png");
-	// sset.add_sample_set(t.cut_and_samplize(SAMPLE_W));
+	// wfc_Tyle t("bricks.png");
+	// sset.add_sample_set(t.cut_and_samplize(SAMPLE_SIZE));
 
 	for (int i = 0; i < filenames.size(); ++i) {
 		sset.add_sample_set(tyles[i]->samplize());
@@ -47,15 +56,15 @@ int main() {
 
 	printf("samples: %lu\n", sset.size());
 
-	for (int i = 0; i < RELPOS_CNT; ++i) {
-		printf("dir [%d]\n", i);
-		for (int j = 0; j < sset.size(); ++j) {
-			for (int k = 0; k < sset.size(); ++k) {
-				printf("[%d] + [%d] = %c\n", j, k, sset.fits(j, k, i) ? 'Y' : 'N');
-			}
-			printf("\n");
-		}
-	}
+	// for (int i = 0; i < RELPOS_CNT; ++i) {
+	// 	printf("dir [%d]\n", i);
+	// 	for (int j = 0; j < sset.size(); ++j) {
+	// 		for (int k = 0; k < sset.size(); ++k) {
+	// 			printf("[%d] + [%d] = %c\n", j, k, sset.fits(j, k, i) ? 'Y' : 'N');
+	// 		}
+	// 		printf("\n");
+	// 	}
+	// }
 
 	WaveFunctionCollapser wfc(WFC_W, WFC_H, sset);
 
@@ -68,25 +77,30 @@ int main() {
     sprite.setScale({SCALE, SCALE});
     sf::RenderWindow window(sf::VideoMode(SCR_W, SCR_H), "WFC");
 
+    TSW tsw = {&texture, &sprite, &window, SAMPLE_SIZE};
+
 	while (window.isOpen()) {
 		// TIMER_START();
-		while (!wfc.collapse());
-		// for (int i = 0; i < wfc.height; ++i) {
-		// 	for (int j = 0; j < wfc.width; ++j) {
-		// 		printf("%lu ", wfc.final_index_map[i * wfc.width + j]);
-		// 	}
-		// 	printf("\n");
-		// }
-		// TIMER_END_AND_PRINT();
-		// for (size_t i = 0; i < sset.size(); ++i) {
-		// 	wfc.final_index_map[i] = i;
-		// }
+		int cnt = 0;
+		while (!wfc.collapse(&tsw)) {
+			++cnt;
+			sf::sleep(sf::seconds(2));
+			if (cnt % 100 == 0) {
+				printf("%d...\n", cnt);
+			}
+		}
 		wfc.generate_image(SAMPLE_W, SAMPLE_H);
+		if (!window.isOpen()) {
+        	break;
+        }
+		// TIMER_END_AND_PRINT();
 
 		sf::Event event;
 		while (window.pollEvent(event)) {
-            if (event.type == sf::Event::Closed)
+            if (event.type == sf::Event::Closed) {
                 window.close();
+                break;
+            }
         }
 
         window.clear();

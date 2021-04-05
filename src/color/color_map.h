@@ -27,6 +27,7 @@ public:
 	void crop_rectangle(size_t &x0, size_t &y0, size_t &x1, size_t &y1) const;
 
 	void superimpose(const ColorMap &cmap, size_t x0, size_t y0);
+	void superimpose_divided(const ColorMap &cmap, size_t x0, size_t y0, float divisor);
 	// void superimpose_alpha_intr(const ColorMap &cmap, size_t x0, size_t y0);
 
 	void flush_to_texture(sf::Texture &texture);
