@@ -11,8 +11,6 @@ sample_set(sample_set_)
 		printf("[ERR]<WFC>: bad pts in ctor\n");
 		return;
 	}
-
-	sample_set.rebuild_fitmask();
 }
 
 struct wfc_WeightedPair {
@@ -51,25 +49,6 @@ bool WaveFunctionCollapser::collapse(TSW *tsw) {
 	q.insert({index_map[init_coord].size(), init_coord});
 	bool flag = false;
 	while (q.size()) {
-		if (tsw) {
-			sf::Event event;
-			while (tsw->window->pollEvent(event)) {
-	            if (event.type == sf::Event::Closed)
-	                tsw->window->close();
-	        }
-	        if (!tsw->window->isOpen()) {
-				return true;
-			}
-
-			generate_mean_image(tsw->sample_size, tsw->sample_size);
-
-			tsw->window->clear();
-	        cmap.flush_to_texture(*tsw->texture);
-	        tsw->window->draw(*tsw->sprite);
-	        tsw->window->display();
-	        sf::sleep(sf::seconds(0.01));
-		}
-
 		wfc_WeightedPair p = *q.begin();
 		q.erase(p);
 
@@ -80,6 +59,29 @@ bool WaveFunctionCollapser::collapse(TSW *tsw) {
 		final_index_map[coord] = x;
 		s.clear();
 		s.insert(x);
+
+		if (tsw) {
+			sf::Event event;
+			while (tsw->window->pollEvent(event)) {
+	            if (event.type == sf::Event::Closed)
+	                tsw->window->close();
+	        }
+	        if (!tsw->window->isOpen()) {
+				return true;
+			}
+
+			for (int i = 0; i < sample_set.size(); ++i) {
+				final_index_map[2 * i] = i;
+			}
+
+			generate_mean_image(tsw->sample_size, tsw->sample_size);
+
+			tsw->window->clear();
+	        cmap.flush_to_texture(*tsw->texture);
+	        tsw->window->draw(*tsw->sprite);
+	        tsw->window->display();
+	        sf::sleep(sf::seconds(0.001));
+		}
 
 		size_t shifts[4] = {(size_t) -width, (size_t) -1, +width, +1};
 		for (int rel_pos = 0; rel_pos < 4; ++rel_pos) {
@@ -146,9 +148,14 @@ void WaveFunctionCollapser::generate_mean_image(const size_t sample_w, const siz
 			size_t sample_index_cnt = index_map[coord].size();
 			wfc_Tyle to_draw(sample_w, sample_h);
 
-			for (auto s : index_map[coord]) {
-				const wfc_Tyle sample = *(dynamic_cast<const wfc_Tyle*>(sample_set.samples[s]));
-				to_draw.superimpose_divided(sample, 0, 0, sample_index_cnt);
+			if (final_index_map[coord] < sample_set.size()) {
+				const wfc_Tyle sample = *(dynamic_cast<const wfc_Tyle*>(sample_set.samples[final_index_map[coord]]));
+				to_draw.superimpose_divided(sample, 0, 0, 1);
+			} else {
+				for (auto s : index_map[coord]) {
+					const wfc_Tyle sample = *(dynamic_cast<const wfc_Tyle*>(sample_set.samples[s]));
+					to_draw.superimpose_divided(sample, 0, 0, sample_index_cnt);
+				}
 			}
 
 			cmap.superimpose(to_draw, x * sample_w, y * sample_h);

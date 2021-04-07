@@ -105,8 +105,15 @@ wfc_SampleSet wfc_Tyle::samplize() const {
 	ret.add_sample(r90);
 	ret.add_sample(r180);
 	ret.add_sample(r270);
+	
 	ret.add_sample(refl_hor());
 	ret.add_sample(refl_vert());
+	ret.add_sample(r90->refl_hor());
+	ret.add_sample(r90->refl_vert());
+	ret.add_sample(r180->refl_hor());
+	ret.add_sample(r180->refl_vert());
+	ret.add_sample(r270->refl_hor());
+	ret.add_sample(r270->refl_vert());
 	return ret;
 }
 
@@ -143,20 +150,56 @@ wfc_Tyle *wfc_Tyle::refl_vert() const {
 	return ret;
 }
 
+void wfc_Tyle::fill_tyle(wfc_Tyle &tyle, const size_t from_x, const size_t from_y) const {
+
+	for (size_t y = 0; y < tyle.height; ++y) {
+		for (size_t x = 0; x < tyle.width; ++x) {
+			tyle[y][x] = (*this)[from_y + y][from_x + x];
+		}
+	}
+}
+
 wfc_SampleSet wfc_Tyle::cut_and_samplize(const size_t n) const {
-	wfc_SampleSet sset;
+	wfc_SampleSet sset(4);
+	sset.reserve_fitmask(2lu * width * height);
+
+	// for (int i = 0; i < 4; ++i) {
+	// 	printf("dir [%d]\n", i);
+	// 	for (size_t j = 0; j < 3; ++j) {
+	// 		for (size_t k = 0; k < 3; ++k) {
+	// 			printf("[%d] + [%d] = %c\n", j, k, sset.fits(j, k, i) ? 'Y' : 'N');
+	// 		}
+	// 		printf("\n");
+	// 	}
+	// }
+
+	// printf("fit [%lu] [%lu] on %d\n", 0, 0, 0);
+	// sset.update_fitmask(0, 0, 0, 1);
+
 
 	for (size_t i = 0; i < height - n; ++i) {
 		for (size_t j = 0; j  < width - n; ++j) {
 			wfc_Tyle *tyle = new wfc_Tyle(n, n);
-			for (size_t y = 0; y < n; ++y) {
-				for (size_t x = 0; x < n; ++x) {
-					(*tyle)[y][x] = (*this)[i + y][j + x];
-				}
-			}
+			fill_tyle(*tyle, j, i);
+			size_t tyle_idx = sset.get_index(tyle);
 
-			//sset.add_sample(tyle);
-			sset.add_sample_set(tyle->samplize());
+			for (int rel_pos = 0; rel_pos < 4; ++rel_pos) {
+				size_t y = i + RELPOS_SHIFTS_Y[rel_pos] * n;
+				size_t x = j + RELPOS_SHIFTS_X[rel_pos] * n;
+				if (x >= width || y >= width || x + n >= width || y + n >= height) {
+					continue;
+				}
+
+				wfc_Tyle *t = new wfc_Tyle(n, n);
+				fill_tyle(*t, x, y);
+				size_t t_idx = sset.get_index(t);
+
+				if (sset.fits(tyle_idx, t_idx, rel_pos)) {
+					continue;
+				}
+
+				sset.update_fitmask(tyle_idx, t_idx, rel_pos, 1);
+			}
 		}
 	}
 

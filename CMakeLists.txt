@@ -9,7 +9,7 @@ include_directories(src)
 
 set(CMAKE_EXE_LINKER_FLAGS "-pthread")
 set(CMAKE_CXX_FLAGS_RELEASE  "-O3 ${WARNING_FLAGS} ")
-set(CMAKE_CXX_FLAGS_DEBUG   "-g3 -O0 ${WARNING_FLAGS}")
+set(CMAKE_CXX_FLAGS_DEBUG   "-g3 -O3 ${WARNING_FLAGS}")
 
 find_package(SFML 2 COMPONENTS system window graphics network audio REQUIRED)
 

@@ -5,6 +5,12 @@ rel_pos_amount(rel_pos_amount_),
 fitmask(nullptr)
 {}
 
+wfc_SampleSet::wfc_SampleSet(const wfc_SampleSet &other):
+samples(other.samples),
+fitmask(other.fitmask),
+rel_pos_amount(other.rel_pos_amount)
+{}
+
 bool wfc_SampleSet::rebuild_fitmask() {
 	size_t cnt = samples.size();
 
@@ -44,6 +50,51 @@ char wfc_SampleSet::fits(const size_t first, const size_t second, const int rel_
 	return fitmask[first * cnt * rel_pos_amount + second * rel_pos_amount + rel_pos];
 }
 
+void wfc_SampleSet::update_fitmask(const size_t first, const size_t second, const int rel_pos, const char fitting) {
+	if (first > samples.size() || second > samples.size()) {
+		return;
+	}
+
+	size_t cnt = samples.size();
+	fitmask[first * cnt * rel_pos_amount + second * rel_pos_amount + rel_pos] = 1;
+}
+
 size_t wfc_SampleSet::size() const {
+	for (size_t i = 0; i < samples.size(); ++i) {
+		if (!samples[i]) {
+			return i;
+		}
+	}
 	return samples.size();
+}
+
+size_t wfc_SampleSet::get_index(const wfc_Sample *sample) {
+	size_t ssize = samples.size();
+	size_t i = 0;
+	for (; i < ssize && samples[i] != nullptr; ++i) {
+		if (samples[i]->eq_sample(sample)) {
+			return i;
+		}
+	}
+	
+	if (i == ssize) {
+		return i;
+	}
+
+	samples[i] = sample;
+	return i;
+}
+
+bool wfc_SampleSet::reserve_fitmask(const size_t ssize) {
+	samples.resize(ssize);
+	fitmask = (char*) calloc(ssize * ssize * rel_pos_amount, sizeof(wfc_Sample*));
+	if (!fitmask) {
+		return false;
+	}
+
+	return true;
+}
+
+void wfc_SampleSet::shrink() {
+	return;
 }
